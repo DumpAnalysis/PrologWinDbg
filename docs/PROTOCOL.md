@@ -46,3 +46,11 @@ The DLL validates response IDs, field counts, numeric ranges, output lengths,
 and RPC totals. It kills and restarts the worker after transport failure,
 interruption, or expiration of its outer deadline. A Windows job controls worker
 lifetime and memory consumption. The protocol has no public network endpoint.
+
+## Architecture metadata (0.2.0)
+
+Protocol version 1 is unchanged. New snapshots include `architecture(S,amd64)`
+or `architecture(S,arm64)` alongside `target(S,Kind,Pid,8)`. Both native targets
+use 8-byte little-endian pointers. The updated worker accepts legacy snapshots
+without this fact, and clears it with every other snapshot fact. Always deploy
+the DLL and its accompanying Prolog files together.

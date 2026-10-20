@@ -62,7 +62,9 @@ $Body = @'
 !prolog.reset
 q
 '@
-$Body = $Body.Replace('__DLL__', $Dll).Replace('__SWIPL__', $Swipl).Replace('__RULES__', $Rules)
+# DbgEng parses escapes inside quoted .load/.unload paths. Extension arguments
+# use their own parser and retain ordinary Windows path separators.
+$Body = $Body.Replace('__DLL__', $Dll.Replace('\','\\')).Replace('__SWIPL__', $Swipl).Replace('__RULES__', $Rules)
 $FactArchitecture = if ($Architecture -eq 'ARM64') { 'arm64' } else { 'amd64' }
 $Body = $Body.Replace('__ARCH__', $FactArchitecture)
 foreach ($Mode in @('dump','live')) {

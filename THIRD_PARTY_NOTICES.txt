@@ -1,4 +1,4 @@
-PrologWinDbg — v0.1.1
+PrologWinDbg — v0.2.0
 
 Original project code and documentation are licensed separately under the
 PolyForm Strict License 1.0.0 in LICENSE.md. The third-party components described
@@ -8,10 +8,14 @@ SWI-Prolog is an external runtime installed by the user. No SWI-Prolog binary
 or library is redistributed in this package. Runtime and package licensing:
 https://www.swi-prolog.org/license.html
 
-The supplied x64 binaries were built with MinGW-w64/GCC. Static compiler and
-threading runtime components are covered by their upstream notices and license
-terms. Copies of the build distribution's copyright notices, GCC Runtime
-Library Exception, and referenced common license texts are in licenses/.
+The v0.2.0 Windows CI packages use Microsoft Visual C++ and statically link
+its runtime. Visual Studio and Windows SDK components retain Microsoft's terms.
+No SWI-Prolog runtime, debugger binaries, or SDK headers are bundled.
+
+The v0.1.x x64 binaries and optional MinGW cross builds use MinGW-w64/GCC.
+Their static compiler and threading runtime components are covered by upstream
+terms. Copies of those build distribution notices, GCC Runtime Library Exception,
+and referenced common license texts remain in licenses/ for those builds.
 
 The Windows debugger interfaces are defined by Microsoft's DbgEng SDK. The
 external SDK header used for the cross build is identified in docs/VALIDATION.md
