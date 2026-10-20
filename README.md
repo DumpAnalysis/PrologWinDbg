@@ -34,13 +34,14 @@ substitute `dist/arm64` or `dist/x64` in the paths.
    .\dist\prologdbg_target.exe --dump C:\Temp\prologdbg-sample.dmp
    ```
 
-4. In WinDbg, replace these paths with your actual project directory:
+4. In WinDbg, replace these paths with your actual project directory. Use
+   forward slashes in quoted paths: the debugger treats backslashes as escapes.
 
    ```text
-   .load C:\PrologWinDbg\dist\prolog.dll
-   !prolog.runtime "C:\Program Files\swipl\bin\swipl.exe"
+   .load C:/PrologWinDbg/dist/prolog.dll
+   !prolog.runtime "C:/Program Files/swipl/bin/swipl.exe"
    !prolog.info
-   !prolog.consult "C:\PrologWinDbg\dist\examples\patterns.pl"
+   !prolog.consult "C:/PrologWinDbg/dist/examples/patterns.pl"
    !prolog.query wd:current_snapshot(S), wd:architecture(S,Architecture).
    !prolog.query wd:current_snapshot(S), wd:thread_id(S,T,WindowsTid).
    !prolog.query wd:current_snapshot(S), wd:stack_frame(S,T,Depth,IP).
@@ -99,7 +100,7 @@ goal in double quotes to protect it from WinDbg's command separator:
 ```
 
 For complex quoting, Unicode text, or multiline goals, put the goal in a UTF-8
-text file and use `!prolog.queryfile "C:\rules\goal.txt"`. Its contents go
+text file and use `!prolog.queryfile "C:/rules/goal.txt"`. Its contents go
 directly to Prolog, bypassing WinDbg's command-text parsing. The file limit is
 1 MiB. For reusable logic, define predicates in a consulted `.pl` file.
 
@@ -132,7 +133,7 @@ in_function(S, T, Module, Function) :-
 Then:
 
 ```text
-!prolog.consult "C:\rules\my_rules.pl"
+!prolog.consult "C:/rules/my_rules.pl"
 !prolog.query wd:current_snapshot(S), my_rules:in_function(S,T,myapp,'ProcessRequest').
 ```
 

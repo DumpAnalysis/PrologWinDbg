@@ -29,7 +29,7 @@ std::wstring runtime_path() {
         if(std::filesystem::exists(installed)) path=installed.wstring();
     }
     if(path.empty() || !std::filesystem::path(path).is_absolute() || !std::filesystem::exists(path))
-        throw std::runtime_error("Set an absolute runtime path: !prolog.runtime \"C:\\Program Files\\swipl\\bin\\swipl.exe\"");
+        throw std::runtime_error("Set an absolute runtime path: !prolog.runtime \"C:/Program Files/swipl/bin/swipl.exe\"");
     return path;
 }
 pd::WorkerProcess& get_worker(pd::Debugger& dbg) {
@@ -93,11 +93,11 @@ extern "C" HRESULT CALLBACK help(PDEBUG_CLIENT client,PCSTR) {
     return command(client,[](pd::Debugger& dbg) {
         dbg.output(
           "Prolog WinDbg " PROLOGDBG_VERSION " - native AMD64/ARM64 user-mode dumps and stopped live processes\n"
-          "!prolog.runtime \"C:\\Program Files\\swipl\\bin\\swipl.exe\"  Set runtime\n"
+          "!prolog.runtime \"C:/Program Files/swipl/bin/swipl.exe\"  Set runtime\n"
           "!prolog.info                             Start/check worker\n"
-          "!prolog.consult \"C:\\rules\\file.pl\"     Load/reload Prolog source\n"
+          "!prolog.consult \"C:/rules/file.pl\"     Load/reload Prolog source\n"
           "!prolog.query Goal.                      Query a fresh snapshot\n"
-          "!prolog.queryfile \"C:\\rules\\goal.txt\"   Read a UTF-8 goal and query\n"
+          "!prolog.queryfile \"C:/rules/goal.txt\"   Read a UTF-8 goal and query\n"
           "!prolog.eval Goal.                       Pure Prolog, no target snapshot\n"
           "!prolog.limits [ms answers frames inferences]  View/set budgets\n"
           "!prolog.reset                            Stop worker; clears consulted rules\n"
