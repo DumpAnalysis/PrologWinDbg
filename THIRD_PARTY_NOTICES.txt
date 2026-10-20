@@ -1,4 +1,8 @@
-PrologWinDbg — v0.1.0
+PrologWinDbg — v0.1.1
+
+Original project code and documentation are licensed separately under the
+PolyForm Strict License 1.0.0 in LICENSE.md. The third-party components described
+here retain their own licenses and are not relicensed under PolyForm Strict.
 
 SWI-Prolog is an external runtime installed by the user. No SWI-Prolog binary
 or library is redistributed in this package. Runtime and package licensing:

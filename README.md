@@ -5,7 +5,7 @@ threads, stack frames, symbols, loaded modules, and memory from a user-mode dump
 or a stopped native x64 process. Load your own Prolog files and run queries from
 the debugger command window.
 
-**Version:** 0.1.0 (experimental).
+**Version:** 0.1.1 (experimental; licensing and packaging update).
 
 **Build status:** the release DLL and Windows test target are cross-compiled
 Windows x64 binaries. The real SWI-Prolog worker, sample rules, and portable
@@ -17,7 +17,7 @@ Windows installation. See `docs/VALIDATION.md` for the exact checks.
 
 The source repository does not contain compiled binaries. Build it using the
 Windows instructions below to populate `dist/`, or extract the
-`PrologWinDbg-v0.1.0-win-x64.zip` release archive, which includes `dist/`.
+`PrologWinDbg-v0.1.1-win-x64.zip` release archive, which includes `dist/`.
 
 1. Install the x64 Windows console version of [SWI-Prolog](https://www.swi-prolog.org/download/stable).
    Version 1 uses the SWI 9.x API and has been tested with SWI-Prolog 9.0.4 on
@@ -245,6 +245,13 @@ See `THIRD_PARTY_NOTICES.txt` for build dependencies and runtime notices.
 
 ## Licensing
 
-No project license has been selected for the original source code. The files
-in `licenses/` and `THIRD_PARTY_NOTICES.txt` document third-party components;
-they do not assign a license to the original project code.
+Copyright © 2026 Dmitry Vostokov. The original PrologWinDbg project code and
+documentation are licensed under the [PolyForm Strict License 1.0.0](LICENSE.md),
+the same license used by [VDL Studio](https://github.com/DumpAnalysis/VDLStudio/blob/main/LICENSE.md).
+The license also applies to the original project code in release v0.1.0.
+
+You may download and use it for personal and other noncommercial purposes;
+redistribution, modifications, derivative works, and commercial use require
+a separate license from the author. See LICENSE.md for the full terms.
+Third-party components retain their own licenses, documented in
+`THIRD_PARTY_NOTICES.txt` and `licenses/`.

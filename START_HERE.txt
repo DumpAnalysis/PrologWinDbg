@@ -1,6 +1,7 @@
-PrologWinDbg — v0.1.0 (experimental)
+PrologWinDbg — v0.1.1 (experimental; licensing and packaging update)
 
 Read README.md for installation and commands.
+Read LICENSE.md for the PolyForm Strict License 1.0.0 terms.
 
 Source checkout: run scripts/build-windows.ps1 to populate dist/.
 Release archive: dist/ contains the x64 Windows DLL and diagnostic target.

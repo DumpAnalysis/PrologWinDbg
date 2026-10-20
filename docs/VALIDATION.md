@@ -2,6 +2,15 @@
 
 Date: 30 September 2026.
 
+## Licensing and packaging update — v0.1.1
+
+On 20 October 2026, the project adopted the PolyForm Strict License 1.0.0.
+The v0.1.1 archive includes LICENSE.md in the root and dist/ directories.
+Runtime source, tests, and the two Windows binaries are byte-for-byte identical
+to v0.1.0. Only licensing, documentation, the CMake project version and license
+installation list, and package manifests changed. The original validation below
+is retained; the licensing update does not represent a new Windows validation run.
+
 ## Completed here
 
 | Check | Result |
