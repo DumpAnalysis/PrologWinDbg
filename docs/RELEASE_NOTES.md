@@ -13,6 +13,12 @@ PolyForm Strict 1.0.0 license.
   Windows host default. Keep build outputs separate and check PE machine types.
 - Add native x64 and ARM64 Windows CI builds, portable tests, CDB dump/live
   smoke tests, and architecture-specific packages.
+- Correct quoted debugger file paths in the smoke script and examples.
+
+Validation: native x64 and ARM64 MSVC builds passed all 99 portable checks
+and both CDB dump/live smoke tests. Interactive WinDbg Ctrl+Break remains a
+manual check. Release binaries are unchanged from the successful
+[CI run](https://github.com/DumpAnalysis/PrologWinDbg/actions/runs/39478127987).
 
 SWI-Prolog is installed separately. Native ARM64 builds are available from
 its development download page. See README.md for setup and

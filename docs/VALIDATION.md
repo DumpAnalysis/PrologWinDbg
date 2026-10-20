@@ -1,26 +1,54 @@
 # v0.2.0 ARM64 validation
 
-Local portable checks on 20 October 2026:
+Validated on 20 October 2026. The [native Windows CI run](https://github.com/DumpAnalysis/PrologWinDbg/actions/runs/39478127987)
+passed for source commit `e2106574e13a6881f01a7fccbdce3fa088fcbc8e`.
+Subsequent release changes only document these results and retain the logs;
+the packaged DLLs and diagnostic executables are the tested CI binaries.
 
-- 22 C++ protocol checks and 36 architecture pairing checks passed.
-- 16 Prolog rule tests passed with SWI-Prolog 9.0.4 on Linux.
-- 25 worker integration tests passed with real SWI-Prolog and a simulated
-  debugger peer, including ARM64/AMD64 snapshot metadata, pointer decoding,
-  unsigned addresses, cleanup, and invalid snapshot recovery.
+| Check | Native x64 | Native ARM64 |
+|---|---|---|
+| MSVC compiler | 19.44.35229.0 | 19.51.36260.0 |
+| C++ protocol checks | 22 passed | 22 passed |
+| Architecture pairing checks | 36 passed | 36 passed |
+| Prolog rule tests | 16 passed | 16 passed |
+| Worker integration tests | 25 passed | 25 passed |
+| SWI-Prolog runtime | 10.1.18-1 x64 | 10.1.18-1 ARM64 |
+| Native CDB | 10.0.26100.4202 | 10.0.26100.6584 |
+| Full user-mode dump smoke test | Passed | Passed |
+| Stopped live-process smoke test | Passed | Passed |
+| PE machine: DLL and diagnostic target | 0x8664 | 0xaa64 |
 
-The Windows CI workflow builds on native x64 and ARM64 hosts and runs the
-same portable suites plus CDB dump/live smoke tests. Windows results for this
-revision are pending; a configured workflow is not evidence of a passing run.
-Interactive WinDbg Ctrl+Break and custom exception/register-context overrides
-remain manual validation tasks.
+Both CDB modes verified arithmetic, multiple answers, architecture metadata,
+thread enumeration, symbol lookup, shared stack functions, 64-bit pointer
+reads, partial/unavailable memory evidence, selected-thread and frame-scope
+restoration, timeout recovery, worker reset, and DLL unload/reload.
+The native tests also exercised the Windows process, pipe, and job-object path.
+Quoted debugger file paths were corrected during validation; README examples
+use forward slashes to avoid DbgEng's backslash escape processing.
+
+The same 99 portable checks also passed locally on Linux x64 with SWI-Prolog
+9.0.4. Worker integration uses a simulated debugger peer; CDB smoke tests use
+the real extension and the supplied diagnostic process.
+
+Raw native logs are retained in `validation/arm64-{dump,live,portable}.log`
+and `validation/x64-{dump,live,portable}.log`. The older protocol/build reports
+in that directory describe 0.1.x, not the new MSVC binaries.
+
+Interactive WinDbg Ctrl+Break, custom exception/register-context overrides,
+and additional application dump formats remain manual validation tasks.
+The supported matrix is a matching native debugger, DLL, and AMD64 or ARM64
+target. WOW64, ARM32, ARM64EC, and cross-architecture scope contexts are not
+claimed as supported.
 
 ## Historical validation (0.1.x)
 
-# Version 1 validation record
+The following is the original record, retained for the earlier releases.
+It does not describe v0.2.0.
+
 
 Date: 30 September 2026.
 
-## Licensing and packaging update — v0.1.1
+### Licensing and packaging update — v0.1.1
 
 On 20 October 2026, the project adopted the PolyForm Strict License 1.0.0.
 The v0.1.1 archive includes LICENSE.md in the root and dist/ directories.
@@ -29,7 +57,7 @@ to v0.1.0. Only licensing, documentation, the CMake project version and license
 installation list, and package manifests changed. The original validation below
 is retained; the licensing update does not represent a new Windows validation run.
 
-## Completed here
+### Completed here
 
 | Check | Result |
 |---|---|
@@ -58,7 +86,7 @@ Portable protocol tests check binary-safe hex transport, empty fields,
 unsigned-integer overflow, memory-range wraparound, atom escaping, Windows
 process-argument quoting, and outer quoting of debugger command goals.
 
-## Build environment
+### Build environment
 
 - Linux x86-64, Ubuntu 24.04.
 - SWI-Prolog 9.0.4 for x86_64-linux.
@@ -74,7 +102,7 @@ The Microsoft header is a build dependency and is not included in the package.
 The MinGW wrapper only supplies missing annotation macros around the include;
 it does not change the interface declarations or vtable layout.
 
-## Windows validation still required
+### Windows validation still required
 
 The Linux build environment has no Windows WinDbg/CDB session. The included
 DLL is therefore **compiled but not verified inside WinDbg**. Windows process

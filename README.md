@@ -10,7 +10,8 @@ the debugger command window.
 Use the DLL built for your debugger's architecture. The debugger, DLL, and
 native target must match: x64/AMD64 together or ARM64 together. Cross-architecture
 scope contexts, WOW64, ARM32, and ARM64EC targets are outside this release's scope.
-See `docs/VALIDATION.md` for the checks performed and remaining limitations.
+Native x64 and ARM64 builds passed all 99 portable checks and CDB dump/live
+smoke tests. See `docs/VALIDATION.md` for the run, logs, and remaining manual checks.
 
 ## Quick start
 

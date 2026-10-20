@@ -1,0 +1,111 @@
+Start testing: Oct 20 18:50 Coordinated Universal Time
+----------------------------------------------------------
+1/4 Testing: protocol
+1/4 Test: protocol
+Command: "D:/a/PrologWinDbg/PrologWinDbg/build-windows-x64/Release/protocol_tests.exe"
+Directory: D:/a/PrologWinDbg/PrologWinDbg/build-windows-x64
+"protocol" start time: Oct 20 18:50 Coordinated Universal Time
+Output:
+----------------------------------------------------------
+22 protocol checks passed
+<end of output>
+Test time =   0.02 sec
+----------------------------------------------------------
+Test Passed.
+"protocol" end time: Oct 20 18:50 Coordinated Universal Time
+"protocol" time elapsed: 00:00:00
+----------------------------------------------------------
+
+2/4 Testing: architecture
+2/4 Test: architecture
+Command: "D:/a/PrologWinDbg/PrologWinDbg/build-windows-x64/Release/architecture_tests.exe"
+Directory: D:/a/PrologWinDbg/PrologWinDbg/build-windows-x64
+"architecture" start time: Oct 20 18:50 Coordinated Universal Time
+Output:
+----------------------------------------------------------
+36 architecture checks passed; build=amd64
+<end of output>
+Test time =   0.01 sec
+----------------------------------------------------------
+Test Passed.
+"architecture" end time: Oct 20 18:50 Coordinated Universal Time
+"architecture" time elapsed: 00:00:00
+----------------------------------------------------------
+
+3/4 Testing: prolog_rules
+3/4 Test: prolog_rules
+Command: "D:/a/_temp/swipl-x64/bin/swipl.exe" "-q" "-f" "none" "-s" "D:/a/PrologWinDbg/PrologWinDbg/tests/rules_tests.pl" "-g" "run_tests" "-t" "halt"
+Directory: D:/a/PrologWinDbg/PrologWinDbg/build-windows-x64
+"prolog_rules" start time: Oct 20 18:50 Coordinated Universal Time
+Output:
+----------------------------------------------------------
+% [1/16] rules:stack_match .......................... passed (0.006 sec)
+% [2/16] rules:shared ............................... passed (0.000 sec)
+% [3/16] rules:magic ................................ passed (0.000 sec)
+% [4/16] rules:partial_is_inconclusive .............. passed (0.000 sec)
+% [5/16] rules:exact_read_throws .................... passed (0.000 sec)
+% [6/16] rules:unsigned_pointer ..................... passed (0.000 sec)
+% [7/16] rules:stale ................................ passed (0.000 sec)
+% [8/16] rules:overflow ............................. passed (0.000 sec)
+% [9/16] rules:too_large ............................ passed (0.000 sec)
+% [10/16] rules:evidence ............................ passed (0.000 sec)
+% [11/16] rules:no_provider ......................... passed (0.000 sec)
+% [12/16] rules:reject_directive .................... passed (0.000 sec)
+% [13/16] architectures:arm64_pointer_and_stack ..... passed (0.000 sec)
+% [14/16] architectures:sna..tecture_replacement .... passed (0.000 sec)
+% [15/16] architectures:leg..ithout_architecture .... passed (0.000 sec)
+% [16/16] architectures:rej..n_architecture_fact .... passed (0.000 sec)
+<end of output>
+Test time =   0.21 sec
+----------------------------------------------------------
+Test Passed.
+"prolog_rules" end time: Oct 20 18:50 Coordinated Universal Time
+"prolog_rules" time elapsed: 00:00:00
+----------------------------------------------------------
+
+4/4 Testing: worker_integration
+4/4 Test: worker_integration
+Command: "C:/hostedtoolcache/windows/Python/3.14.8/x64/python3.exe" "D:/a/PrologWinDbg/PrologWinDbg/tests/test_worker.py" "D:/a/_temp/swipl-x64/bin/swipl.exe"
+Directory: D:/a/PrologWinDbg/PrologWinDbg/build-windows-x64
+"worker_integration" start time: Oct 20 18:50 Coordinated Universal Time
+Output:
+----------------------------------------------------------
+test_answer_limit (__main__.WorkerTests.test_answer_limit) ... ok
+test_arithmetic_and_multiple_solutions (__main__.WorkerTests.test_arithmetic_and_multiple_solutions) ... ok
+test_background_memory_request_is_rejected (__main__.WorkerTests.test_background_memory_request_is_rejected) ... ok
+test_consult_reload_and_pattern (__main__.WorkerTests.test_consult_reload_and_pattern) ... ok
+test_consult_syntax_error_is_reported (__main__.WorkerTests.test_consult_syntax_error_is_reported) ... ok
+test_empty_snapshot_has_no_debugger_access (__main__.WorkerTests.test_empty_snapshot_has_no_debugger_access) ... ok
+test_exact_partial_throws_and_worker_survives (__main__.WorkerTests.test_exact_partial_throws_and_worker_survives) ... ok
+test_inference_exhaustion_at_rpc_boundaries (__main__.WorkerTests.test_inference_exhaustion_at_rpc_boundaries) ... ok
+test_inference_limit (__main__.WorkerTests.test_inference_limit) ... ok
+test_invalid_snapshot_is_rejected (__main__.WorkerTests.test_invalid_snapshot_is_rejected) ... ok
+test_memory_lookup_and_cache (__main__.WorkerTests.test_memory_lookup_and_cache) ... ok
+test_native_architectures_and_snapshot_cleanup (__main__.WorkerTests.test_native_architectures_and_snapshot_cleanup) ... ok
+test_optional_period_and_reject_trailing_goal (__main__.WorkerTests.test_optional_period_and_reject_trailing_goal) ... ok
+test_partial_and_unavailable (__main__.WorkerTests.test_partial_and_unavailable) ... ok
+test_query_cannot_consume_protocol_input (__main__.WorkerTests.test_query_cannot_consume_protocol_input) ... ok
+test_query_output_all_standard_streams (__main__.WorkerTests.test_query_output_all_standard_streams) ... ok
+test_reject_foreign_architecture_snapshot (__main__.WorkerTests.test_reject_foreign_architecture_snapshot) ... ok
+test_snapshot_and_stale_memory (__main__.WorkerTests.test_snapshot_and_stale_memory) ... ok
+test_syntax_error_and_false (__main__.WorkerTests.test_syntax_error_and_false) ... ok
+test_time_limit (__main__.WorkerTests.test_time_limit) ... ok
+test_timeout_during_memory_reply_keeps_protocol_synchronized (__main__.WorkerTests.test_timeout_during_memory_reply_keeps_protocol_synchronized) ... ok
+test_unicode_and_quotes (__main__.WorkerTests.test_unicode_and_quotes) ... ok
+test_unsigned_addresses (__main__.WorkerTests.test_unsigned_addresses) ... ok
+test_worker_exit_can_be_restarted (__main__.WorkerTests.test_worker_exit_can_be_restarted) ... ok
+test_zero_and_overflow_reads (__main__.WorkerTests.test_zero_and_overflow_reads) ... ok
+
+----------------------------------------------------------------------
+Ran 25 tests in 4.458s
+
+OK
+<end of output>
+Test time =   4.93 sec
+----------------------------------------------------------
+Test Passed.
+"worker_integration" end time: Oct 20 18:50 Coordinated Universal Time
+"worker_integration" time elapsed: 00:00:04
+----------------------------------------------------------
+
+End testing: Oct 20 18:50 Coordinated Universal Time

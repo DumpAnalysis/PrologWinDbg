@@ -1,0 +1,154 @@
+Opened log file 'C:\a\PrologWinDbg\PrologWinDbg\build-smoke\dump.log'
+
+************* Preparing the environment for Debugger Extensions Gallery repositories **************
+   ExtensionRepository : Implicit
+   UseExperimentalFeatureForNugetShare : true
+   AllowNugetExeUpdate : true
+   NonInteractiveNuget : true
+   AllowNugetMSCredentialProviderInstall : true
+   AllowParallelInitializationOfLocalRepositories : true
+
+   EnableRedirectToV8JsProvider : false
+
+   -- Configuring repositories
+      ----> Repository : LocalInstalled, Enabled: true
+      ----> Repository : UserExtensions, Enabled: true
+
+>>>>>>>>>>>>> Preparing the environment for Debugger Extensions Gallery repositories completed, duration 0.031 seconds
+
+************* Waiting for Debugger Extensions Gallery to Initialize **************
+
+>>>>>>>>>>>>> Waiting for Debugger Extensions Gallery to Initialize completed, duration 0.203 seconds
+   ----> Repository : UserExtensions, Enabled: true, Packages count: 0
+   ----> Repository : LocalInstalled, Enabled: true, Packages count: 27
+
+Microsoft (R) Windows Debugger Version 10.0.26100.6584 ARM64
+Copyright (c) Microsoft Corporation. All rights reserved.
+
+
+Loading Dump File [C:\a\PrologWinDbg\PrologWinDbg\build-smoke\sample.dmp]
+User Mini Dump File with Full Memory: Only application data is available
+
+Symbol search path is: srv*
+Executable search path is: 
+Windows 10 Version 26200 MP (4 procs) Free ARM 64-bit (AArch64)
+Product: WinNt, suite: SingleUserTS
+Edition build lab: 26100.1.arm64fre.ge_release.240331-1435
+Debug session time: Tue Oct 20 11:50:52.000 2026 (UTC - 7:00)
+System Uptime: 0 days 0:10:21.839
+Process Uptime: not available
+.NatVis script successfully loaded from 'C:\Program Files (x86)\Windows Kits\10\Debuggers\ARM64\Visualizers\atlmfc.natvis'
+NatVis script successfully loaded from 'C:\Program Files (x86)\Windows Kits\10\Debuggers\ARM64\Visualizers\ObjectiveC.natvis'
+NatVis script successfully loaded from 'C:\Program Files (x86)\Windows Kits\10\Debuggers\ARM64\Visualizers\concurrency.natvis'
+NatVis script successfully loaded from 'C:\Program Files (x86)\Windows Kits\10\Debuggers\ARM64\Visualizers\cpp_rest.natvis'
+NatVis script successfully loaded from 'C:\Program Files (x86)\Windows Kits\10\Debuggers\ARM64\Visualizers\stl.natvis'
+NatVis script successfully loaded from 'C:\Program Files (x86)\Windows Kits\10\Debuggers\ARM64\Visualizers\Windows.Data.Json.natvis'
+NatVis script successfully loaded from 'C:\Program Files (x86)\Windows Kits\10\Debuggers\ARM64\Visualizers\Windows.Devices.Geolocation.natvis'
+NatVis script successfully loaded from 'C:\Program Files (x86)\Windows Kits\10\Debuggers\ARM64\Visualizers\Windows.Devices.Sensors.natvis'
+NatVis script successfully loaded from 'C:\Program Files (x86)\Windows Kits\10\Debuggers\ARM64\Visualizers\Windows.Media.natvis'
+NatVis script successfully loaded from 'C:\Program Files (x86)\Windows Kits\10\Debuggers\ARM64\Visualizers\windows.natvis'
+NatVis script successfully loaded from 'C:\Program Files (x86)\Windows Kits\10\Debuggers\ARM64\Visualizers\winrt.natvis'
+................
+For analysis of this file, run !analyze -v
+ntdll!NtGetContextThread+0x4:
+00007ffb`a8071ff4 d65f03c0 ret
+0:000> .load "C:\\a\\PrologWinDbg\\PrologWinDbg\\dist\\arm64\\prolog.dll"
+0:000> !prolog.runtime "C:\\a\\_temp\\swipl-arm64\\bin\\swipl.exe"
+[prolog] Runtime set to C:\a\_temp\swipl-arm64\bin\swipl.exe
+0:000> !prolog.info
+[prolog] 0.2.0 / protocol 1; extension=arm64; SWI-Prolog 10.1.18; worker running
+0:000> !prolog.consult "C:\\a\\PrologWinDbg\\PrologWinDbg\\dist\\arm64\\examples\\patterns.pl"
+[prolog] ok; 0 answer(s). File consulted
+0:000> !prolog.limits 30000 100 128 10000000
+[prolog] 30000 ms; 100 answers; 128 frames/thread; 10000000 inferences
+0:000> !prolog.eval X is 6*7, X=42, writeln('PD_ARITHMETIC_OK').
+PD_ARITHMETIC_OK
+bindings(['X'=42],[])
+[prolog] ok; 1 answer(s). Search exhausted for the captured evidence
+0:000> !prolog.eval "(X=a;X=b), nonvar(X), writeln('PD_DISJUNCTION_OK')."
+PD_DISJUNCTION_OK
+bindings(['X'=a],[])
+PD_DISJUNCTION_OK
+bindings(['X'=b],[])
+[prolog] ok; 2 answer(s). Search exhausted for the captured evidence
+0:000> ~1s
+ntdll!NtWaitForWorkViaWorkerFactory+0x4:
+00007ffb`a8072ea4 d65f03c0 ret
+0:001> .frame 1
+01 00000001`001ffa70 00007ffb`a4cf8740     ntdll!TppWorkerThread+0x430
+0:001> .printf "PD_THREAD_BEFORE:%x\n", @$tid
+PD_THREAD_BEFORE:1bf4
+0:001> .printf "PD_SCOPE_BEFORE:%p\n", @$scopeip
+PD_SCOPE_BEFORE:00007ffba8121ff0
+0:001> !prolog.query wd:current_snapshot(S), findall(T,wd:thread(S,T),Ts), length(Ts,N), N>=3, writeln('PD_THREADS_OK').
+*** WARNING: Unable to verify checksum for prologdbg_target.exe
+[prolog] Snapshot 4
+PD_THREADS_OK
+bindings(['S'=4,'T'=_207726,'Ts'=[0,1,2,3,4,5],'N'=6],[])
+[prolog] ok; 1 answer(s). Search exhausted for the captured evidence
+0:001> !prolog.query wd:current_snapshot(S), wd:architecture(S,arm64), wd:target(S,_,_,8), writeln('PD_ARCHITECTURE_OK').
+[prolog] Snapshot 5
+PD_ARCHITECTURE_OK
+bindings(['S'=5],[])
+[prolog] ok; 1 answer(s). Search exhausted for the captured evidence
+0:001> !prolog.query wd:current_snapshot(S), wd:lookup(S,'prologdbg_target!g_magic',ok(A)), patterns:inspect_magic(S,A,matched(prologdb,A)), writeln('PD_MAGIC_OK').
+[prolog] Snapshot 6
+PD_MAGIC_OK
+bindings(['S'=6,'A'=140697957888000],[])
+[prolog] ok; 1 answer(s). Search exhausted for the captured evidence
+0:001> !prolog.query wd:current_snapshot(S), once(patterns:shared_function(S,A,B,prologdbg_target,'WaitForRelease')), writeln('PD_STACKS_OK').
+[prolog] Snapshot 7
+PD_STACKS_OK
+bindings(['S'=7,'A'=4,'B'=5],[])
+[prolog] ok; 1 answer(s). Search exhausted for the captured evidence
+0:001> !prolog.query wd:current_snapshot(S), wd:lookup(S,'prologdbg_target!g_partial',ok(V)), wd:pointer(S,V,A), wd:bytes(S,A,4,[84,65,73,76]), wd:memory(S,A,8,R), functor(R,Shape,_), memberchk(Shape,[partial,unavailable]), writeln('PD_INCOMPLETE_OK').
+[prolog] Snapshot 8
+PD_INCOMPLETE_OK
+bindings(['S'=8,'V'=140697957891088,'A'=1641982398460,'R'=partial([84,65,73,76],8,"HRESULT 0x0; requested 8, read 4"),'Shape'=partial],[])
+[prolog] ok; 1 answer(s). Search exhausted for the captured evidence
+0:001> .printf "PD_THREAD_AFTER:%x\n", @$tid
+PD_THREAD_AFTER:1bf4
+0:001> .printf "PD_SCOPE_AFTER:%p\n", @$scopeip
+PD_SCOPE_AFTER:00007ffba8121ff0
+0:001> !prolog.limits 100 100 128 10000000
+[prolog] 100 ms; 100 answers; 128 frames/thread; 10000000 inferences
+0:001> !prolog.eval sleep(2).
+[prolog] timeout; 0 answer(s). Time budget exhausted; results are incomplete
+0:001> !prolog.limits 5000 100 128 10000000
+[prolog] 5000 ms; 100 answers; 128 frames/thread; 10000000 inferences
+0:001> !prolog.eval writeln('PD_AFTER_TIMEOUT_OK').
+PD_AFTER_TIMEOUT_OK
+true
+[prolog] ok; 1 answer(s). Search exhausted for the captured evidence
+0:001> !prolog.reset
+[prolog] Worker stopped. Consult files again after restart.
+0:001> !prolog.info
+[prolog] 0.2.0 / protocol 1; extension=arm64; SWI-Prolog 10.1.18; worker running
+0:001> !prolog.eval writeln('PD_RESTART_OK').
+PD_RESTART_OK
+true
+[prolog] ok; 1 answer(s). Search exhausted for the captured evidence
+0:001> .unload "C:\\a\\PrologWinDbg\\PrologWinDbg\\dist\\arm64\\prolog.dll"
+Unloading C:\a\PrologWinDbg\PrologWinDbg\dist\arm64\prolog.dll extension DLL
+0:001> .load "C:\\a\\PrologWinDbg\\PrologWinDbg\\dist\\arm64\\prolog.dll"
+0:001> !prolog.runtime "C:\\a\\_temp\\swipl-arm64\\bin\\swipl.exe"
+[prolog] Runtime set to C:\a\_temp\swipl-arm64\bin\swipl.exe
+0:001> !prolog.eval writeln('PD_RELOAD_OK').
+PD_RELOAD_OK
+true
+[prolog] ok; 1 answer(s). Search exhausted for the captured evidence
+0:001> !prolog.reset
+[prolog] Worker stopped. Consult files again after restart.
+0:001> q
+quit:
+NatVis script unloaded from 'C:\Program Files (x86)\Windows Kits\10\Debuggers\ARM64\Visualizers\atlmfc.natvis'
+NatVis script unloaded from 'C:\Program Files (x86)\Windows Kits\10\Debuggers\ARM64\Visualizers\ObjectiveC.natvis'
+NatVis script unloaded from 'C:\Program Files (x86)\Windows Kits\10\Debuggers\ARM64\Visualizers\concurrency.natvis'
+NatVis script unloaded from 'C:\Program Files (x86)\Windows Kits\10\Debuggers\ARM64\Visualizers\cpp_rest.natvis'
+NatVis script unloaded from 'C:\Program Files (x86)\Windows Kits\10\Debuggers\ARM64\Visualizers\stl.natvis'
+NatVis script unloaded from 'C:\Program Files (x86)\Windows Kits\10\Debuggers\ARM64\Visualizers\Windows.Data.Json.natvis'
+NatVis script unloaded from 'C:\Program Files (x86)\Windows Kits\10\Debuggers\ARM64\Visualizers\Windows.Devices.Geolocation.natvis'
+NatVis script unloaded from 'C:\Program Files (x86)\Windows Kits\10\Debuggers\ARM64\Visualizers\Windows.Devices.Sensors.natvis'
+NatVis script unloaded from 'C:\Program Files (x86)\Windows Kits\10\Debuggers\ARM64\Visualizers\Windows.Media.natvis'
+NatVis script unloaded from 'C:\Program Files (x86)\Windows Kits\10\Debuggers\ARM64\Visualizers\windows.natvis'
+NatVis script unloaded from 'C:\Program Files (x86)\Windows Kits\10\Debuggers\ARM64\Visualizers\winrt.natvis'
