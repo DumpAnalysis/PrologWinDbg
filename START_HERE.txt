@@ -1,0 +1,14 @@
+PrologWinDbg — v0.1.0 (experimental)
+
+Read README.md for installation and commands.
+
+Source checkout: run scripts/build-windows.ps1 to populate dist/.
+Release archive: dist/ contains the x64 Windows DLL and diagnostic target.
+Keep dist/prolog/ and dist/examples/ next to the DLL. Install x64 SWI-Prolog separately.
+
+Sources: src/, prolog/, examples/.
+Windows validation: scripts/smoke-windows.ps1.
+
+The DLL cross-compiles successfully. All 57 portable checks passed in the
+original validation run. Execution inside Windows WinDbg/CDB remains untested.
+See docs/VALIDATION.md and validation/ for details.

@@ -1,0 +1,14 @@
+LIBRARY prolog
+EXPORTS
+    DebugExtensionInitialize
+    DebugExtensionUninitialize
+    DebugExtensionNotify
+    help
+    runtime
+    info
+    reset
+    consult
+    query
+    queryfile
+    eval
+    limits=limits_cmd

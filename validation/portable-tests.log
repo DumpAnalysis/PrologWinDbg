@@ -1,0 +1,78 @@
+Start testing: Sep 30 10:50 CEST
+----------------------------------------------------------
+1/3 Testing: protocol
+1/3 Test: protocol
+Command: "/workspace/scratch/50582c03eb5a/build-linux/protocol_tests"
+Directory: /workspace/scratch/50582c03eb5a/build-linux
+"protocol" start time: Sep 30 10:50 CEST
+Output:
+----------------------------------------------------------
+22 protocol checks passed
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"protocol" end time: Sep 30 10:50 CEST
+"protocol" time elapsed: 00:00:00
+----------------------------------------------------------
+
+2/3 Testing: prolog_rules
+2/3 Test: prolog_rules
+Command: "/usr/bin/swipl" "-q" "-f" "none" "-s" "/workspace/scratch/50582c03eb5a/prolog-windbg/tests/rules_tests.pl" "-g" "run_tests" "-t" "halt"
+Directory: /workspace/scratch/50582c03eb5a/build-linux
+"prolog_rules" start time: Sep 30 10:50 CEST
+Output:
+----------------------------------------------------------
+............
+<end of output>
+Test time =   0.04 sec
+----------------------------------------------------------
+Test Passed.
+"prolog_rules" end time: Sep 30 10:50 CEST
+"prolog_rules" time elapsed: 00:00:00
+----------------------------------------------------------
+
+3/3 Testing: worker_integration
+3/3 Test: worker_integration
+Command: "/opt/codex/runtimes/codex-primary-runtime/dependencies/python/bin/python3" "/workspace/scratch/50582c03eb5a/prolog-windbg/tests/test_worker.py" "/usr/bin/swipl"
+Directory: /workspace/scratch/50582c03eb5a/build-linux
+"worker_integration" start time: Sep 30 10:50 CEST
+Output:
+----------------------------------------------------------
+test_answer_limit (__main__.WorkerTests.test_answer_limit) ... ok
+test_arithmetic_and_multiple_solutions (__main__.WorkerTests.test_arithmetic_and_multiple_solutions) ... ok
+test_background_memory_request_is_rejected (__main__.WorkerTests.test_background_memory_request_is_rejected) ... ok
+test_consult_reload_and_pattern (__main__.WorkerTests.test_consult_reload_and_pattern) ... ok
+test_consult_syntax_error_is_reported (__main__.WorkerTests.test_consult_syntax_error_is_reported) ... ok
+test_empty_snapshot_has_no_debugger_access (__main__.WorkerTests.test_empty_snapshot_has_no_debugger_access) ... ok
+test_exact_partial_throws_and_worker_survives (__main__.WorkerTests.test_exact_partial_throws_and_worker_survives) ... ok
+test_inference_exhaustion_at_rpc_boundaries (__main__.WorkerTests.test_inference_exhaustion_at_rpc_boundaries) ... ok
+test_inference_limit (__main__.WorkerTests.test_inference_limit) ... ok
+test_invalid_snapshot_is_rejected (__main__.WorkerTests.test_invalid_snapshot_is_rejected) ... ok
+test_memory_lookup_and_cache (__main__.WorkerTests.test_memory_lookup_and_cache) ... ok
+test_optional_period_and_reject_trailing_goal (__main__.WorkerTests.test_optional_period_and_reject_trailing_goal) ... ok
+test_partial_and_unavailable (__main__.WorkerTests.test_partial_and_unavailable) ... ok
+test_query_cannot_consume_protocol_input (__main__.WorkerTests.test_query_cannot_consume_protocol_input) ... ok
+test_query_output_all_standard_streams (__main__.WorkerTests.test_query_output_all_standard_streams) ... ok
+test_snapshot_and_stale_memory (__main__.WorkerTests.test_snapshot_and_stale_memory) ... ok
+test_syntax_error_and_false (__main__.WorkerTests.test_syntax_error_and_false) ... ok
+test_time_limit (__main__.WorkerTests.test_time_limit) ... ok
+test_timeout_during_memory_reply_keeps_protocol_synchronized (__main__.WorkerTests.test_timeout_during_memory_reply_keeps_protocol_synchronized) ... ok
+test_unicode_and_quotes (__main__.WorkerTests.test_unicode_and_quotes) ... ok
+test_unsigned_addresses (__main__.WorkerTests.test_unsigned_addresses) ... ok
+test_worker_exit_can_be_restarted (__main__.WorkerTests.test_worker_exit_can_be_restarted) ... ok
+test_zero_and_overflow_reads (__main__.WorkerTests.test_zero_and_overflow_reads) ... ok
+
+----------------------------------------------------------------------
+Ran 23 tests in 1.645s
+
+OK
+<end of output>
+Test time =   1.70 sec
+----------------------------------------------------------
+Test Passed.
+"worker_integration" end time: Sep 30 10:50 CEST
+"worker_integration" time elapsed: 00:00:01
+----------------------------------------------------------
+
+End testing: Sep 30 10:50 CEST

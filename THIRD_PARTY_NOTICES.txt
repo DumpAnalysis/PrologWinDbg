@@ -1,0 +1,18 @@
+PrologWinDbg — v0.1.0
+
+SWI-Prolog is an external runtime installed by the user. No SWI-Prolog binary
+or library is redistributed in this package. Runtime and package licensing:
+https://www.swi-prolog.org/license.html
+
+The supplied x64 binaries were built with MinGW-w64/GCC. Static compiler and
+threading runtime components are covered by their upstream notices and license
+terms. Copies of the build distribution's copyright notices, GCC Runtime
+Library Exception, and referenced common license texts are in licenses/.
+
+The Windows debugger interfaces are defined by Microsoft's DbgEng SDK. The
+external SDK header used for the cross build is identified in docs/VALIDATION.md
+and docs/SOURCES.md. Microsoft's header and Windows debugger binaries are not
+redistributed in this package.
+
+WinDbg, Windows SDK, Visual Studio, and CMake are separate build or execution
+dependencies. Their names identify the tools and interfaces used.

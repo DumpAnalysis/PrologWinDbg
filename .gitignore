@@ -1,0 +1,7 @@
+build*/
+dist/
+__pycache__/
+*.dmp
+*.log
+!validation/*.log
+.vs/

@@ -1,0 +1,22 @@
+prolog.dll
+build-cross/prolog.dll: PE32+ executable (DLL) (console) x86-64, for MS Windows, 20 sections
+DLL Name: KERNEL32.dll
+DLL Name: msvcrt.dll
+[Ordinal/Name Pointer] Table
+	[   0] DebugExtensionInitialize
+	[   1] DebugExtensionNotify
+	[   2] DebugExtensionUninitialize
+	[   3] consult
+	[   4] eval
+	[   5] help
+	[   6] info
+	[   7] limits
+	[   8] query
+	[   9] queryfile
+	[  10] reset
+	[  11] runtime
+
+The Function Table (interpreted .pdata section contents)
+vma:			BeginAddress	 EndAddress	  UnwindData
+ 0000000273811000:	0000000273701000 000000027370100c 000000027381e000
+ 000000027381100c:	0000000273701010 00000002737011df 000000027381e004
