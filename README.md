@@ -1,31 +1,34 @@
 # PrologWinDbg
 
-A native x64 WinDbg extension with a persistent SWI-Prolog worker. It exposes
+A native x64 and ARM64 WinDbg extension with a persistent SWI-Prolog worker. It exposes
 threads, stack frames, symbols, loaded modules, and memory from a user-mode dump
-or a stopped native x64 process. Load your own Prolog files and run queries from
+or a stopped native x64 or ARM64 process. Load your own Prolog files and run queries from
 the debugger command window.
 
-**Version:** 0.1.1 (experimental; licensing and packaging update).
+**Version:** 0.2.0 (experimental; native ARM64 support).
 
-**Build status:** the release DLL and Windows test target are cross-compiled
-Windows x64 binaries. The real SWI-Prolog worker, sample rules, and portable
-protocol tests were run on Linux. This version has not been loaded into WinDbg
-in the build environment. Run `scripts/smoke-windows.ps1` to validate it on your
-Windows installation. See `docs/VALIDATION.md` for the exact checks.
+Use the DLL built for your debugger's architecture. The debugger, DLL, and
+native target must match: x64/AMD64 together or ARM64 together. Cross-architecture
+scope contexts, WOW64, ARM32, and ARM64EC targets are outside this release's scope.
+See `docs/VALIDATION.md` for the checks performed and remaining limitations.
 
 ## Quick start
 
 The source repository does not contain compiled binaries. Build it using the
-Windows instructions below to populate `dist/`, or extract the
-`PrologWinDbg-v0.1.1-win-x64.zip` release archive, which includes `dist/`.
+Windows instructions below to populate `dist/x64/` or `dist/arm64/`. Release
+archives are named `PrologWinDbg-v0.2.0-win-x64.zip` and
+`PrologWinDbg-v0.2.0-win-arm64.zip`; each puts its selected binaries in `dist/`.
+The examples below use that release archive layout. For a source build,
+substitute `dist/arm64` or `dist/x64` in the paths.
 
-1. Install the x64 Windows console version of [SWI-Prolog](https://www.swi-prolog.org/download/stable).
-   Version 1 uses the SWI 9.x API and has been tested with SWI-Prolog 9.0.4 on
-   Linux. Other SWI releases, including Windows builds, need the smoke checks.
+1. Install the Windows console version of [SWI-Prolog](https://www.swi-prolog.org/download/stable).
+   Native ARM64 installers are available from the [development downloads](https://www.swi-prolog.org/download/devel).
+   The CI matrix uses native SWI-Prolog 10.1.18-1 on both architectures. SWI runs
+   as a separate process; it is not linked into or bundled with the DLL.
 2. Keep `dist/prolog.dll` together
    with the `dist/prolog` and `dist/examples` directories.
-3. Open a native x64 user-mode dump in WinDbg, or attach to a native x64 process
-   and break into it. For a reproducible dump, run this in PowerShell:
+3. Open a native user-mode dump in the matching x64 or ARM64 WinDbg, or attach
+   to a native process of that architecture and break into it. For a reproducible dump, run this in PowerShell:
 
    ```powershell
    .\dist\prologdbg_target.exe --dump C:\Temp\prologdbg-sample.dmp
@@ -38,6 +41,7 @@ Windows instructions below to populate `dist/`, or extract the
    !prolog.runtime "C:\Program Files\swipl\bin\swipl.exe"
    !prolog.info
    !prolog.consult "C:\PrologWinDbg\dist\examples\patterns.pl"
+   !prolog.query wd:current_snapshot(S), wd:architecture(S,Architecture).
    !prolog.query wd:current_snapshot(S), wd:thread_id(S,T,WindowsTid).
    !prolog.query wd:current_snapshot(S), wd:stack_frame(S,T,Depth,IP).
    !prolog.query wd:current_snapshot(S), patterns:stack_contains(S,T,Module,Function).
@@ -173,20 +177,30 @@ Press Ctrl+Break. Confirm the prompt returns, then run `!prolog.info` and
 ## Build with Visual Studio on Windows
 
 Install Visual Studio 2022 (Desktop development with C++), CMake, and the
-Windows SDK with **Debugging Tools for Windows**. SWI-Prolog and Python 3 are
+Windows SDK with **Debugging Tools for Windows**. For ARM64, install the Visual
+Studio C++ ARM64 build tools. SWI-Prolog and Python 3 are
 needed to run all portable tests. Add `swipl.exe` and `python.exe` to PATH.
 
 From a Visual Studio Developer PowerShell:
 
 ```powershell
-.\scripts\build-windows.ps1
-.\scripts\smoke-windows.ps1
+.\scripts\build-windows.ps1 -Architecture ARM64
+.\scripts\smoke-windows.ps1 -Architecture ARM64
 ```
 
+Use `-Architecture x64` for x64. Omitting it selects the native Windows host
+architecture, including from an emulated PowerShell process. Build directories
+and packages are separate (`build-windows-arm64`, `dist/arm64`, and the x64
+equivalents). An x64 host can cross-compile ARM64, but skips the native C++
+tests; run the smoke tests and CTest on ARM64 Windows.
+
 If your debugger SDK is elsewhere, pass `-DebuggingTools`. It should contain
-`sdk\inc\dbgeng.h` (or `inc\dbgeng.h`). If CDB or SWI-Prolog is elsewhere,
-pass `-Cdb` and `-Swipl` to the smoke script. The build script writes `dist`
-and copies MSVC-generated PDBs for the test target there.
+`sdk\inc\dbgeng.h` (or `inc\dbgeng.h`); the compiler can also use its Windows
+SDK include paths. If CDB or SWI-Prolog is elsewhere, pass `-Cdb` and `-Swipl`.
+The smoke script selects `Debuggers/arm64/cdb.exe` or `Debuggers/x64/cdb.exe`
+and verifies the PE architecture of CDB, the DLL, and the test target before
+launching. Pass `-Dist .\dist` to test an extracted release archive. MSVC builds
+link the C++ runtime statically and include the test target PDB.
 
 The smoke script creates its own target process, full dump, debugger command
 files, and logs in a new temporary directory. It tests both dump and live
@@ -218,7 +232,8 @@ cmake --install build-cross --prefix dist
 
 ## Version 1 scope and limits
 
-- Native AMD64 user-mode targets only. WOW64, ARM64, kernel-specific data,
+- Native AMD64 and ARM64 user-mode targets with a matching native debugger/DLL.
+  WOW64, ARM32, ARM64EC, cross-architecture scope contexts, kernel-specific data,
   managed-runtime objects, general register predicates, typed fields, exception
   providers, and rule-triggered execution actions are not implemented here.
 - The current process is captured. Other processes in a multi-process session

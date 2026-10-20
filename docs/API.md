@@ -11,6 +11,7 @@ a retained memory image.
 |---|---|
 | `current_snapshot(-S)` | Current query's snapshot; throws if absent |
 | `target(?S,?Kind,?ProcessId,?PointerBytes)` | `Kind` is `dump` or `live`; ProcessId is the OS PID; pointer width is 8 |
+| `architecture(?S,?Architecture)` | Effective target processor: `amd64` or `arm64`; added in 0.2.0 |
 | `thread(?S,?T)` | T is DbgEng's thread ID in the selected process |
 | `thread_id(?S,?T,?WindowsTid)` | Maps engine thread ID to OS thread ID |
 | `stack_frame(?S,?T,?Depth,?IP)` | Depth is zero-based; IP is an unsigned target address |

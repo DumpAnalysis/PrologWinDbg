@@ -148,6 +148,22 @@ class WorkerTests(unittest.TestCase):
         status, answers, _, _ = self.peer.query("wd:current_snapshot(S), wd:lookup(S,'target!high',ok(A)).")
         self.assertEqual(status,'ok'); self.assertIn(str(0xfedcba9876543210), answers[0])
 
+    def test_native_architectures_and_snapshot_cleanup(self):
+        for architecture in ('arm64', 'amd64'):
+            with self.subTest(architecture=architecture):
+                s = self.peer.counter + 1
+                facts = f'[target({s},dump,42,8),architecture({s},{architecture})]'
+                goal = (f'wd:current_snapshot(S), wd:architecture(S,{architecture}), '
+                        'wd:pointer(S,4096,P), P = 4775019910827823696, '
+                        "wd:lookup(S,'target!high',ok(18364758544493064720)).")
+                self.assertEqual(self.peer.query(goal, facts=facts)[0], 'ok')
+                # The following legacy snapshot deliberately omits architecture.
+                self.assertEqual(self.peer.query('\\+ wd:architecture(_,_).')[0], 'ok')
+
+    def test_reject_foreign_architecture_snapshot(self):
+        self.assertEqual(self.peer.query('true.', facts='[architecture(99,arm64)]')[0], 'error')
+        self.assertEqual(self.peer.query('X is 2+2.')[0], 'ok')
+
     def test_partial_and_unavailable(self):
         status, answers, _, _ = self.peer.query('wd:current_snapshot(S), wd:memory(S,8192,8,R).')
         self.assertEqual(status,'ok'); self.assertIn('partial',answers[0])

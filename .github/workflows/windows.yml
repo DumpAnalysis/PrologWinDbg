@@ -1,0 +1,106 @@
+name: Windows native builds
+
+on:
+  push:
+    branches: [main, 'codex/arm64-support']
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  native:
+    name: Windows ${{ matrix.architecture }}
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - architecture: x64
+            runner: windows-2022
+            swi_arch: x64
+            swi_sha256: dee461a511c9ee7c6a1e4f763be2c2a4cfa0997bb7d3b07b92c1bb01d5852c06
+          - architecture: ARM64
+            runner: windows-11-arm
+            swi_arch: arm64
+            swi_sha256: d587bc8d71b80666c46d8a97aa21494d0c53ca2c47d2c4b87f5f909102cc99bc
+    defaults:
+      run:
+        shell: pwsh
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install native SWI-Prolog
+        env:
+          SWI_ARCH: ${{ matrix.swi_arch }}
+          SWI_SHA256: ${{ matrix.swi_sha256 }}
+        run: |
+          $Installer = Join-Path $env:RUNNER_TEMP 'swipl-setup.exe'
+          Invoke-WebRequest "https://www.swi-prolog.org/download/devel/bin/swipl-10.1.18-1.$env:SWI_ARCH.exe" -OutFile $Installer
+          if ((Get-FileHash $Installer -Algorithm SHA256).Hash -ne $env:SWI_SHA256) { throw 'SWI-Prolog checksum mismatch' }
+          $SwiRoot = Join-Path $env:RUNNER_TEMP "swipl-$env:SWI_ARCH"
+          $Install = Start-Process $Installer -ArgumentList @('/S', "/D=$SwiRoot") -Wait -PassThru
+          if ($Install.ExitCode -ne 0) { throw "SWI-Prolog installer failed: $($Install.ExitCode)" }
+          $Swipl = Join-Path $SwiRoot 'bin\swipl.exe'
+          if (-not (Test-Path $Swipl)) { throw 'SWI-Prolog executable was not installed' }
+          . ./scripts/windows-architecture.ps1
+          Assert-PEArchitecture $Swipl '${{ matrix.architecture }}'
+          & $Swipl --version
+          "$SwiRoot\bin" | Out-File $env:GITHUB_PATH -Append
+          "PROLOGDBG_TEST_SWIPL=$Swipl" | Out-File $env:GITHUB_ENV -Append
+      - name: Install Debugging Tools for Windows
+        run: |
+          $Cdb = "${env:ProgramFiles(x86)}\Windows Kits\10\Debuggers\${{ matrix.architecture }}\cdb.exe"
+          if (-not (Test-Path $Cdb)) {
+            $Installer = Join-Path $env:RUNNER_TEMP 'winsdksetup.exe'
+            # Windows SDK 10.0.26100.9457, linked by Microsoft's SDK downloads page.
+            Invoke-WebRequest 'https://go.microsoft.com/fwlink/?linkid=2382321' -OutFile $Installer
+            $Signature = Get-AuthenticodeSignature $Installer
+            if ($Signature.Status -ne 'Valid' -or $Signature.SignerCertificate.Subject -notmatch 'Microsoft Corporation') {
+              throw 'Windows SDK installer signature could not be verified'
+            }
+            $Install = Start-Process $Installer -ArgumentList @('/features','OptionId.WindowsDesktopDebuggers','/quiet','/norestart') -Wait -PassThru
+            if ($Install.ExitCode -notin @(0,3010)) { throw "Windows SDK installer failed: $($Install.ExitCode)" }
+          }
+          if (-not (Test-Path $Cdb)) { throw "Missing native debugger: $Cdb" }
+          "PROLOGDBG_TEST_CDB=$Cdb" | Out-File $env:GITHUB_ENV -Append
+      - name: Build and run portable tests
+        run: |
+          if (-not (Get-Command swipl -ErrorAction SilentlyContinue)) { throw 'SWI-Prolog is required for CI' }
+          if (-not (Get-Command python -ErrorAction SilentlyContinue)) { throw 'Python is required for CI' }
+          ./scripts/build-windows.ps1 -Architecture '${{ matrix.architecture }}'
+      - name: Native CDB dump and live smoke tests
+        run: |
+          ./scripts/smoke-windows.ps1 -Architecture '${{ matrix.architecture }}' -Cdb $env:PROLOGDBG_TEST_CDB -Swipl $env:PROLOGDBG_TEST_SWIPL -LogDirectory './build-smoke'
+      - name: Package source and native binaries
+        run: |
+          $Architecture = '${{ matrix.swi_arch }}'
+          $Version = [regex]::Match((Get-Content CMakeLists.txt -Raw), 'project\(PrologWinDbg VERSION ([0-9.]+)').Groups[1].Value
+          if (-not $Version) { throw 'Project version not found' }
+          New-Item -ItemType Directory build-package, build-release | Out-Null
+          git archive HEAD --format=zip --output=build-package/source.zip
+          if ($LASTEXITCODE -ne 0) { throw 'Source archive failed' }
+          Expand-Archive build-package/source.zip build-package/PrologWinDbg
+          Copy-Item "dist/$Architecture" build-package/PrologWinDbg/dist -Recurse
+          $Archive = "PrologWinDbg-v$Version-win-$Architecture.zip"
+          Compress-Archive build-package/PrologWinDbg "build-release/$Archive"
+          $Hash = (Get-FileHash "build-release/$Archive" -Algorithm SHA256).Hash.ToLowerInvariant()
+          "$Hash  $Archive" | Set-Content "build-release/SHA256SUMS-$Architecture.txt" -Encoding ascii
+      - uses: actions/upload-artifact@v4
+        with:
+          name: PrologWinDbg-win-${{ matrix.swi_arch }}
+          path: build-release/*
+          if-no-files-found: error
+          retention-days: 7
+      - name: Preserve diagnostic logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: validation-${{ matrix.swi_arch }}
+          path: |
+            build-smoke/*.log
+            build-smoke/*.txt
+            build-windows-*/Testing/Temporary/LastTest.log
+          if-no-files-found: ignore
+          retention-days: 7

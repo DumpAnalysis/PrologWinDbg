@@ -17,3 +17,10 @@ The implementation uses these primary references. Accessed 30 September 2026.
 - SWI-Prolog, [library(prolog_stream)](https://www.swi-prolog.org/pldoc/man?section=prologstream).
 - SWI-Prolog, [Predefined stream aliases](https://www.swi-prolog.org/pldoc/man?section=streamalias).
 - SWI-Prolog, [sig_atomic/1](https://www.swi-prolog.org/pldoc/doc_for?object=sig_atomic%2F1).
+
+## ARM64 support references (20 October 2026)
+
+- Microsoft, [Debugging Arm64](https://learn.microsoft.com/en-us/windows-hardware/drivers/debugger/debugging-arm64).
+- Microsoft, [IDebugSymbols3::GetScope](https://learn.microsoft.com/en-us/windows-hardware/drivers/ddi/dbgeng/nf-dbgeng-idebugsymbols3-getscope): the context layout belongs to the effective target processor.
+- SWI-Prolog, [Windows ARM64 development installers](https://www.swi-prolog.org/download/devel).
+- GitHub, [hosted runner architectures](https://docs.github.com/en/actions/reference/runners/github-hosted-runners).

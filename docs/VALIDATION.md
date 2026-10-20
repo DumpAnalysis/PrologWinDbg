@@ -1,3 +1,21 @@
+# v0.2.0 ARM64 validation
+
+Local portable checks on 20 October 2026:
+
+- 22 C++ protocol checks and 36 architecture pairing checks passed.
+- 16 Prolog rule tests passed with SWI-Prolog 9.0.4 on Linux.
+- 25 worker integration tests passed with real SWI-Prolog and a simulated
+  debugger peer, including ARM64/AMD64 snapshot metadata, pointer decoding,
+  unsigned addresses, cleanup, and invalid snapshot recovery.
+
+The Windows CI workflow builds on native x64 and ARM64 hosts and runs the
+same portable suites plus CDB dump/live smoke tests. Windows results for this
+revision are pending; a configured workflow is not evidence of a passing run.
+Interactive WinDbg Ctrl+Break and custom exception/register-context overrides
+remain manual validation tasks.
+
+## Historical validation (0.1.x)
+
 # Version 1 validation record
 
 Date: 30 September 2026.

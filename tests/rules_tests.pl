@@ -25,3 +25,22 @@ test(evidence) :- stack_evidence(1,0,evidence([frame(0,4096)],captured_prefix(1,
 test(no_provider) :- memory(1,12345,1,unavailable(no_memory_provider)).
 test(reject_directive,[throws(error(domain_error(snapshot_fact,_),_))]) :- wd:install_snapshot(1,[(:-halt)]).
 :- end_tests(rules).
+
+:- begin_tests(architectures,[cleanup(wd:clear_snapshot)]).
+test(arm64_pointer_and_stack) :-
+    fixture,
+    assertz(wd:architecture(1,arm64)),
+    wd:architecture(1,arm64), pointer(1,9000,9223372036854775808),
+    shared_function(1,0,1,myapp,'WaitForRelease').
+test(snapshot_architecture_replacement) :-
+    wd:install_snapshot(10,[target(10,dump,42,8),architecture(10,arm64)]),
+    wd:architecture(10,arm64),
+    wd:install_snapshot(11,[target(11,live,42,8),architecture(11,amd64)]),
+    \+ wd:architecture(10,_), wd:architecture(11,amd64),
+    wd:clear_snapshot, \+ wd:architecture(_,_).
+test(legacy_snapshot_without_architecture) :-
+    wd:install_snapshot(12,[target(12,dump,42,8)]),
+    wd:target(12,dump,42,8), \+ wd:architecture(12,_).
+test(reject_foreign_architecture_fact,[throws(error(domain_error(snapshot_fact,_),_))]) :-
+    wd:install_snapshot(13,[architecture(14,arm64)]).
+:- end_tests(architectures).

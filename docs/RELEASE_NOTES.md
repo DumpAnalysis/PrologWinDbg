@@ -1,4 +1,26 @@
-# PrologWinDbg v0.1.1
+# PrologWinDbg v0.2.0
+
+Experimental native ARM64 support, retaining native x64 support and the
+PolyForm Strict 1.0.0 license.
+
+- Build a native ARM64 DLL and diagnostic target with Visual Studio.
+- Match the DLL, debugger, and effective target architecture before capturing
+  architecture-specific scope contexts. Invalidate a query if the effective
+  processor changes; never restore a saved context into another architecture.
+- Expose `wd:architecture(S,arm64)` or `wd:architecture(S,amd64)` without
+  changing the existing `target/4` or memory APIs.
+- Select x64 or ARM64 builds and smoke tests explicitly, or use the native
+  Windows host default. Keep build outputs separate and check PE machine types.
+- Add native x64 and ARM64 Windows CI builds, portable tests, CDB dump/live
+  smoke tests, and architecture-specific packages.
+
+SWI-Prolog is installed separately. Native ARM64 builds are available from
+its development download page. See README.md for setup and
+VALIDATION.md for the exact verification status.
+
+## Previous releases
+
+### v0.1.1
 
 Licensing and packaging update to the experimental v0.1.0 release.
 
@@ -16,7 +38,7 @@ See [LICENSE.md](../LICENSE.md) for the full terms and
 [VALIDATION.md](VALIDATION.md) for the validation record. Execution inside
 Windows WinDbg/CDB remains untested; this is still an experimental prerelease.
 
-## Previous release: v0.1.0
+### v0.1.0
 
 Initial experimental release of a native x64 WinDbg extension backed by a
 persistent, separate SWI-Prolog process.

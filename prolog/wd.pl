@@ -1,10 +1,10 @@
 :- module(wd, [current_snapshot/1, thread/2, thread_id/3, stack_frame/4,
                stack_pointer/4, symbol/5, symbol_status/3, module/4,
-               coverage/3, target/4, memory/4, bytes/4, pointer/3,
+               coverage/3, target/4, architecture/2, memory/4, bytes/4, pointer/3,
                lookup/3]).
 :- use_module(library(error)).
 :- dynamic snapshot/1, thread/2, thread_id/3, stack_frame/4, stack_pointer/4,
-           symbol/5, symbol_status/3, module/4, coverage/3, target/4.
+           symbol/5, symbol_status/3, module/4, coverage/3, target/4, architecture/2.
 :- multifile memory_provider/4, lookup_provider/3.
 :- dynamic memory_cache/4, lookup_cache/3.
 
@@ -36,12 +36,14 @@ allowed_fact(symbol_status, 3).
 allowed_fact(module, 4).
 allowed_fact(coverage, 3).
 allowed_fact(target, 4).
+allowed_fact(architecture, 2).
 
 clear_snapshot :-
     retractall(snapshot(_)), retractall(thread(_,_)), retractall(thread_id(_,_,_)),
     retractall(stack_frame(_,_,_,_)), retractall(stack_pointer(_,_,_,_)),
     retractall(symbol(_,_,_,_,_)), retractall(symbol_status(_,_,_)),
     retractall(module(_,_,_,_)), retractall(coverage(_,_,_)), retractall(target(_,_,_,_)),
+    retractall(architecture(_,_)),
     retractall(memory_cache(_,_,_,_)), retractall(lookup_cache(_,_,_)).
 
 memory(S, Address, Length, Result) :-

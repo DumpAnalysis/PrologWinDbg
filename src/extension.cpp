@@ -81,7 +81,7 @@ BOOL WINAPI DllMain(HINSTANCE h,DWORD reason,LPVOID) {
     return TRUE;
 }
 extern "C" HRESULT CALLBACK DebugExtensionInitialize(PULONG version,PULONG flags) {
-    *version=DEBUG_EXTENSION_VERSION(0,1); *flags=0; return S_OK;
+    *version=DEBUG_EXTENSION_VERSION(0,2); *flags=0; return S_OK;
 }
 extern "C" void CALLBACK DebugExtensionUninitialize() {
     delete worker;worker=nullptr;
@@ -92,7 +92,7 @@ extern "C" void CALLBACK DebugExtensionNotify(ULONG,ULONG64) {
 extern "C" HRESULT CALLBACK help(PDEBUG_CLIENT client,PCSTR) {
     return command(client,[](pd::Debugger& dbg) {
         dbg.output(
-          "Prolog WinDbg Version 1 (0.1.0) - native AMD64 user-mode dumps and stopped live processes\n"
+          "Prolog WinDbg " PROLOGDBG_VERSION " - native AMD64/ARM64 user-mode dumps and stopped live processes\n"
           "!prolog.runtime \"C:\\Program Files\\swipl\\bin\\swipl.exe\"  Set runtime\n"
           "!prolog.info                             Start/check worker\n"
           "!prolog.consult \"C:\\rules\\file.pl\"     Load/reload Prolog source\n"
@@ -116,7 +116,7 @@ extern "C" HRESULT CALLBACK runtime(PDEBUG_CLIENT client,PCSTR args) {
 }
 extern "C" HRESULT CALLBACK info(PDEBUG_CLIENT client,PCSTR) {
     return command(client,[](pd::Debugger& dbg) {
-        auto& w=get_worker(dbg); dbg.output("[prolog] Version 1 / protocol 1; SWI-Prolog "+w.version()+"; worker running\n");
+        auto& w=get_worker(dbg); dbg.output(std::string("[prolog] " PROLOGDBG_VERSION " / protocol 1; extension=")+pd::architecture_name(pd::native_machine)+"; SWI-Prolog "+w.version()+"; worker running\n");
     });
 }
 extern "C" HRESULT CALLBACK reset(PDEBUG_CLIENT client,PCSTR) {

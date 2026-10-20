@@ -1,6 +1,7 @@
 #pragma once
 #include "win_util.hpp"
 #include "dbgeng_compat.hpp"
+#include "architecture.hpp"
 #include <functional>
 #include <vector>
 
@@ -20,6 +21,7 @@ class Debugger {
     Com<IDebugDataSpaces> memory_;
     ULONG process_ = DEBUG_ANY_ID;
     ULONG system_ = DEBUG_ANY_ID;
+    ULONG machine_ = 0;
     std::size_t bytes_read_ = 0;
     std::uint64_t generation_ = 0;
 public:

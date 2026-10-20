@@ -24,7 +24,13 @@ void Debugger::require_stopped() {
     check(control_->GetExecutionStatus(&status),"GetExecutionStatus");
     if(status!=DEBUG_STATUS_BREAK) throw std::runtime_error("Break into the target before querying");
     check(control_->GetEffectiveProcessorType(&machine),"GetEffectiveProcessorType");
-    if(machine!=IMAGE_FILE_MACHINE_AMD64) throw std::runtime_error("Version 1 supports native AMD64 targets only");
+    if(!supported_machine(machine))
+        throw std::runtime_error("Supported target architectures are native AMD64 and ARM64; WOW64 and ARM64EC are unsupported");
+    if(!native_target(native_machine,machine))
+        throw std::runtime_error(std::string("Target architecture ")+architecture_name(machine)+
+            " does not match this "+architecture_name(native_machine)+
+            " extension; use a matching native debugger and DLL");
+    machine_=machine;
     check(systems_->GetCurrentProcessId(&process_),"GetCurrentProcessId");
     Com<IDebugSystemObjects3> sys3(systems_.get(),IID_IDebugSystemObjects3);
     check(sys3->GetCurrentSystemId(&system_),"GetCurrentSystemId");
@@ -33,16 +39,18 @@ void Debugger::require_stopped() {
 }
 void Debugger::check_session() {
     check_interrupt();
-    ULONG status=0,p=0,s=0;
+    ULONG status=0,p=0,s=0,machine=0;
     check(control_->GetExecutionStatus(&status),"GetExecutionStatus");
     check(systems_->GetCurrentProcessId(&p),"GetCurrentProcessId");
     Com<IDebugSystemObjects3> sys3(systems_.get(),IID_IDebugSystemObjects3);
     check(sys3->GetCurrentSystemId(&s),"GetCurrentSystemId");
-    if(status!=DEBUG_STATUS_BREAK || p!=process_ || s!=system_ || generation_!=session_generation.load())
+    check(control_->GetEffectiveProcessorType(&machine),"GetEffectiveProcessorType");
+    if(status!=DEBUG_STATUS_BREAK || p!=process_ || s!=system_ || machine!=machine_ || generation_!=session_generation.load())
         throw std::runtime_error("Debugger target changed during the query; snapshot invalidated");
 }
 
 class ScopeGuard {
+    IDebugControl4* control_;
     IDebugSystemObjects* systems_;
     IDebugSymbols3* symbols_;
     ULONG thread_ = 0;
@@ -51,18 +59,24 @@ class ScopeGuard {
     CONTEXT context_{};
     bool restored_ = false;
 public:
-    ScopeGuard(IDebugSystemObjects* systems,IDebugSymbols3* symbols): systems_(systems),symbols_(symbols) {
+    ScopeGuard(IDebugControl4* control,IDebugSystemObjects* systems,IDebugSymbols3* symbols):
+        control_(control),systems_(systems),symbols_(symbols) {
         check(systems_->GetCurrentThreadId(&thread_),"Save current thread");
         check(symbols_->GetScope(&ip_,&frame_,&context_,sizeof(context_)),"Save debugger scope");
     }
     void restore() {
         if(restored_) return;
+        ULONG machine=0;
+        check(control_->GetEffectiveProcessorType(&machine),"Check scope architecture");
+        if(!native_target(native_machine,machine))
+            throw std::runtime_error("Effective processor changed; saved scope cannot be restored safely");
         check(systems_->SetCurrentThreadId(thread_),"Restore current thread");
         check(symbols_->SetScope(ip_,&frame_,&context_,sizeof(context_)),"Restore debugger scope");
         restored_=true;
     }
     ~ScopeGuard() {
-        if(!restored_) {
+        ULONG machine=0;
+        if(!restored_ && SUCCEEDED(control_->GetEffectiveProcessorType(&machine)) && native_target(native_machine,machine)) {
             systems_->SetCurrentThreadId(thread_);
             symbols_->SetScope(ip_,&frame_,&context_,sizeof(context_));
         }
@@ -70,7 +84,7 @@ public:
 };
 
 std::string Debugger::snapshot(std::uint64_t id,const Limits& limits) {
-    require_stopped(); ScopeGuard saved(systems_.get(),symbols_.get());
+    require_stopped(); ScopeGuard saved(control_.get(),systems_.get(),symbols_.get());
     const auto started=GetTickCount64();
     auto budget=[&] {
         check_session();
@@ -89,6 +103,7 @@ std::string Debugger::snapshot(std::uint64_t id,const Limits& limits) {
     check(control_->GetDebuggeeType(&klass,&qual),"Get target type");
     std::string kind=qual>=DEBUG_USER_WINDOWS_SMALL_DUMP ? "dump" : "live";
     fact("target("+sid+","+kind+","+std::to_string(os_pid)+",8)");
+    fact("architecture("+sid+","+architecture_name(machine_)+")");
     ULONG total=0;
     check(systems_->GetNumberThreads(&total),"GetNumberThreads");
     ULONG count=std::min<ULONG>(total,limits.threads);
